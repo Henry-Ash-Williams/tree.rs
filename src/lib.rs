@@ -4,6 +4,9 @@
 use std::cmp::PartialEq;
 use std::fmt::Debug;
 
+mod bst;
+use bst::*; 
+
 #[cfg(test)]
 #[macro_use]
 mod ps;
