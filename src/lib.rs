@@ -200,9 +200,9 @@ mod tests {
     use crate::Tree;
 
     #[test]
-    fn default_init() {
+    fn default_init_test() {
         let tree: Tree<f64> = Tree::default();
-        pretty_assert!(
+        pretty_assert_eq!(
             tree,
             Tree {
                 node: 0.0,
@@ -213,9 +213,9 @@ mod tests {
     }
 
     #[test]
-    fn new_init() {
+    fn new_init_test() {
         let tree: Tree<f64> = Tree::new(5.0);
-        pretty_assert!(
+        pretty_assert_eq!(
             tree,
             Tree {
                 node: 5.0,
@@ -226,27 +226,27 @@ mod tests {
     }
 
     #[test]
-    fn get_and_insert_left() {
+    fn push_left_test() {
         let mut tree: Tree<f64> = Tree::new(100.0);
-        pretty_assert!(tree.get_left(), None);
+        pretty_assert_eq!(tree.get_left(), None);
         tree.push_left(50.0);
-        pretty_assert!(tree.get_left(), Some(Tree::new(50.0)));
+        pretty_assert_eq!(tree.get_left(), Some(Tree::new(50.0)));
     }
 
     #[test]
-    fn get_and_insert_right() {
+    fn push_right_test() {
         let mut tree: Tree<f64> = Tree::new(100.0);
-        pretty_assert!(tree.get_right(), None);
+        pretty_assert_eq!(tree.get_right(), None);
         tree.push_right(50.0);
-        pretty_assert!(tree.get_right(), Some(Tree::new(50.0)));
+        pretty_assert_eq!(tree.get_right(), Some(Tree::new(50.0)));
     }
 
     #[test]
-    fn insert_left_right() {
+    fn push_left_right_test() {
         let mut tree: Tree<f64> = Tree::new(100.0);
         tree.push_left_right(50.0, 2.0);
 
-        pretty_assert!(
+        pretty_assert_eq!(
             tree,
             Tree {
                 node: 100.0,
@@ -263,7 +263,7 @@ mod tests {
             None => unreachable!(),
         };
 
-        pretty_assert!(
+        pretty_assert_eq!(
             tree,
             Tree {
                 node: 100.0,
@@ -278,12 +278,36 @@ mod tests {
     }
 
     #[test]
-    fn inorder_traversal() {
+    fn get_left_test() {
+        let mut tree: Tree<f64> = Tree::new(100.0); 
+        tree.set_left(50.0); 
+        tree.set_right(2.0); 
+
+        pretty_assert_eq!(
+            tree.get_left(),
+            Some(Tree::new(50.0))
+        )
+    }
+    
+    #[test]
+    fn get_right_test() {
+        let mut tree: Tree<f64> = Tree::new(100.0); 
+        tree.set_left(50.0); 
+        tree.set_right(2.0); 
+
+        pretty_assert_eq!(
+            tree.get_right(),
+            Some(Tree::new(2.0))
+        )
+    }
+
+    #[test]
+    fn inorder_traversal_test() {
         let mut tree: Tree<f64> = Tree::new(100.0);
 
-        pretty_assert!(tree.inorder_traversal(), vec![100.0]);
+        pretty_assert_eq!(tree.inorder_traversal(), vec![100.0]);
         tree.push_left_right(50.0, 2.0);
-        pretty_assert!(tree.inorder_traversal(), vec![50.0, 100.0, 2.0]);
+        pretty_assert_eq!(tree.inorder_traversal(), vec![50.0, 100.0, 2.0]);
         match tree.get_left() {
             Some(left_child) => {
                 let mut _left_child = left_child;
@@ -293,7 +317,7 @@ mod tests {
             }
             None => unreachable!(),
         };
-        pretty_assert!(tree.inorder_traversal(), vec![25.0, 50.0, 2.0, 100.0, 2.0]);
+        pretty_assert_eq!(tree.inorder_traversal(), vec![25.0, 50.0, 2.0, 100.0, 2.0]);
         match tree.get_left() {
             Some(left_child) => {
                 let mut _left_child = left_child;
@@ -313,9 +337,126 @@ mod tests {
             }
             None => unreachable!(),
         };
-        pretty_assert!(
+        pretty_assert_eq!(
             tree.inorder_traversal(),
             vec![5.0, 25.0, 5.0, 50.0, 2.0, 100.0, 2.0]
         );
+    }
+
+    #[test]
+    fn set_left_test() {
+        let mut tree: Tree<f64> = Tree::new(100.0);
+        tree.set_left(50.0);
+
+        pretty_assert_eq!(tree, Tree { 
+            node: 100.0,
+            l_child: Some(Box::new(Tree {
+                node: 50.0,
+                l_child: None, 
+                r_child: None,
+            })),
+            r_child: None,
+        })
+    }
+    
+    #[test]
+    fn set_right_test() {
+        let mut tree: Tree<f64> = Tree::new(100.0);
+        tree.set_right(2.0);
+
+        pretty_assert_eq!(tree, Tree { 
+            node: 100.0,
+            l_child: None,
+            r_child: Some(Box::new(Tree {
+                node: 2.0,
+                l_child: None,
+                r_child: None,
+            })),
+        })
+    }
+
+    #[test]
+    fn set_left_subtree_test() {
+        let mut tree: Tree<f64> = Tree::new(100.0);
+        let mut left_child: Tree<f64> = Tree::new(50.0);
+
+        left_child.push_left_right(25.0, 2.0);
+
+        tree.set_left_subtree(left_child);
+        tree.push_right(2.0);
+
+        pretty_assert_eq!(
+            tree,
+            Tree {
+                node: 100.0, 
+                l_child: Some(Box::new(Tree { 
+                    node: 50.0,
+                    l_child: Some(Box::new(Tree::new(25.0))),
+                    r_child: Some(Box::new(Tree::new(2.0))),
+                })),
+                r_child: Some(Box::new(Tree { 
+                    node: 2.0,
+                    l_child: None,
+                    r_child: None
+                })),
+            }
+        )
+    }
+
+    #[test]
+    fn set_right_subtree_test() {
+        let mut tree: Tree<f64> = Tree::new(100.0);
+        let mut right_child: Tree<f64> = Tree::new(150.0);
+
+        tree.push_left(50.0);
+
+        pretty_assert_eq!(
+            tree,
+            Tree {
+                node: 100.0,
+                l_child: Some(Box::new(Tree::new(50.0))),
+                r_child: None, 
+            }
+        );
+
+        right_child.push_left_right(125.0, 200.0); 
+        tree.set_right_subtree(right_child);
+
+        pretty_assert_eq!(
+            tree,
+            Tree {
+                node: 100.0,
+                l_child: Some(Box::new(Tree::new(50.0))),
+                r_child: Some(Box::new(Tree { 
+                    node: 150.0,
+                    l_child: Some(Box::new(Tree::new(125.0))),
+                    r_child: Some(Box::new(Tree::new(200.0)))
+                })),
+            }
+        )
+    }
+
+    #[test]
+    fn has_children_test() {
+        let mut tree: Tree<f64> = Tree::new(100.0);
+        tree.push_left_right(50.0, 2.0);
+
+        pretty_assert!(tree.has_children())
+    }
+
+    #[test]
+    fn has_left_child_test() {
+        let mut tree: Tree<f64> = Tree::new(100.0);
+        tree.push_left(50.0);
+
+        pretty_assert!(tree.has_left())
+    }
+    
+    #[test]
+    fn has_right_child_test() {
+        let mut tree: Tree<f64> = Tree::new(100.0);
+        tree.push_right(2.0);
+
+        pretty_assert!(tree.has_right())
     }
 }

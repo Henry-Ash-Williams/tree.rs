@@ -1,7 +1,7 @@
 #[macro_use]
 pub mod ps {
     #[macro_export]
-    macro_rules! pretty_assert {
+    macro_rules! pretty_assert_eq {
         ($lhs:expr, $rhs:expr) => {{
             let _lhs = &$lhs;
             let _rhs = &$rhs;
@@ -15,6 +15,18 @@ pub mod ps {
                 "Failed assertion rhs == lhs, rhs: \n{:#?}",
                 _lhs
             )
+        }};
+    }
+    
+    #[macro_export]
+    macro_rules! pretty_assert {
+        ($x:expr) => {{
+            let _x = $x; 
+            assert!(
+                _x,
+                "Failed assertion: \n{:#?}",
+                _x
+            );
         }};
     }
 
