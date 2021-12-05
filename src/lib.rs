@@ -410,7 +410,6 @@ mod tests {
     fn set_right_subtree_test() {
         let mut tree: Tree<f64> = Tree::new(100.0);
         let mut right_child: Tree<f64> = Tree::new(150.0);
-
         tree.push_left(50.0);
 
         pretty_assert_eq!(
