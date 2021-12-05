@@ -6,7 +6,7 @@ use std::fmt::Debug;
 
 #[cfg(test)]
 #[macro_use]
-mod ps;
+mod macros;
 
 #[derive(Debug, Clone, PartialEq, Eq, Ord, PartialOrd, Default)]
 struct Tree<T> {
@@ -94,6 +94,7 @@ impl<T> Tree<T> {
             self.r_child = Some(Box::new(Tree::new(node)))
         }
     }
+
     /// Push a value to the right, and leftmost postitions in the tree.  
     pub fn push_left_right(&mut self, left_node: T, right_node: T)
     where
